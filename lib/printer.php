@@ -1,6 +1,8 @@
 <?php
 
 define('SOURCE_DIRECT', 0);
+define('SOURCE_SOCIAL', 1);
+
 define('BLOCK_LIMIT', 256);
 
 
