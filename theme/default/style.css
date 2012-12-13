@@ -10,6 +10,65 @@ body {
 		/* color: #aaa; */
     	font-family: helvetica, arial, sans-serif;
 }
+
+#paper
+{
+font-family: monospace;
+width: 20em;
+border: 1px solid #acacac;
+}
+
+#paper .line
+{
+}
+
+#paper .L
+{
+    text-decoration: underline;
+}
+
+#paper .JC
+{
+    text-align: center;
+}
+
+#paper .I {
+    background: black;
+    color: white;
+}
+
+#paper .U {
+    width: 100%;
+    height: 100%;
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+#paper .B {
+    font-weight: bold;
+}
+
+#paper .S {
+    text-decoration: line-through;
+}
+
+#paper .L {
+    text-decoration: underline;
+}
+
+#paper .H {
+    font-size: x-large;
+}
+
+#paper .W {
+    font-size: x-large;
+}
+
+
+
 a{
     /* color: #8ed6ff; */
 	outline: none;

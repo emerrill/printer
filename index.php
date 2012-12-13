@@ -21,7 +21,7 @@ if ($sent) {
 $recents = get_records('messages', '', '', 'id DESC', '*', '', 20);
 
 print "<table>";
-print "<tr><td width=75px>From</td><td width=180px>Time</td><td>Status</td>";
+print "<tr><td width=75px>From</td><td width=180px>Time</td><td width=75px>Status</td><td></td></tr>";
 foreach ($recents as $message) {
     print "<tr>";
     $user = get_record('users', 'id', $message->userid);
@@ -37,6 +37,9 @@ foreach ($recents as $message) {
     } else {
         print "<font color=red>Pending</font>";
     }
+    print "</td>";
+    print "<td>";
+    print '<a href="viewMessage.php?messageid='.$message->id.'">View</a>';
     print "</td>";
     print "</tr>";
 }
