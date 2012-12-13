@@ -31,7 +31,7 @@ if ($paper !== null) {
                 $newblock = new stdClass();
                 $newblock->printed = 0;
 
-                if ($blocks = get_records_sql('printblocks', 'messageid', $record->messageid)) {
+                if ($blocks = get_records('printblocks', 'messageid', $record->messageid)) {
                     foreach ($blocks as $block) {
                         $newblock->id = $block->id;
                         update_record('printblocks', $newblock);
