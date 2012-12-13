@@ -75,14 +75,14 @@ if (!$userExists) {
 if ($userExists) {
 	?>
 	An admin user already exists.
-	<form method="post" action="../admin/loadAllCats.php">
+	<form method="post" action="../index.php">
 	<input type="submit" name="submit" value="Continue...">
 	</form>
 	<?php
 } elseif (isset($newuser) && $newuser->id) {
 	?>
 	The admin user was successfully created.
-	<form method="post" action="../admin/loadAllCats.php">
+	<form method="post" action="../index.php">
 	<input type="submit" name="submit" value="Continue...">
 	</form>
 	<?php

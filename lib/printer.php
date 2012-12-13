@@ -20,7 +20,7 @@ function create_message($message, $source = SOURCE_DIRECT) {
     make_blocks($mesg);
 }
 
-function make_blocks($message) {
+function make_blocks($message, $return = false) {
     $body = get_header($message);
 
     $content = $message->content;
@@ -34,6 +34,11 @@ function make_blocks($message) {
     }
 
     $body .= get_footer($message);
+
+
+    if ($return) {
+        return $body;
+    }
 
     save_block_chunks($body, $message->id);
 }
@@ -93,42 +98,50 @@ function printer_view($message) {
     $blocks = get_records('printblocks', 'messageid', $message->id, 'id ASC');
 
     foreach ($blocks as $block) {
-        $lines = explode("\n", $block->block);
-        foreach ($lines as $line) {
-            $content = substr($line, strpos($line, '$')+1);
-            $content = htmlentities($content);
-            $content = str_replace(' ', '&nbsp;', $content);
-    
-            //$classes = '';
-            $chars = substr($line, strpos($line, '|')+1, strpos($line, '$')-strpos($line, '|')-1);
-    
-            $chars = str_split($chars);
-    
-            $nochar = true;
-            $justify = false;
-            foreach ($chars as $char) {
-                if ($char == ':') {
-                    $justify = true;
-                    if ($nochar) {
-                        $classes = '';
-                    }
-                    continue;
-                }
-                $nochar = false;
+        $out .= make_html(trim($block->block), $classes);
+    }
 
-                if (ctype_upper($char) || is_numeric($char)) {
-                    if ($char == 'N') {
-                        $classes = '';
-                    }
+    return $out;
+}
+
+function make_html($body, &$classes) {
+    $out = '';
+    $lines = explode("\n", $body);
+    foreach ($lines as $line) {
+        $content = substr($line, strpos($line, '$')+1);
+        $content = htmlentities($content);
+        $content = str_replace(' ', '&nbsp;', $content);
+
+        //$classes = '';
+        $chars = substr($line, strpos($line, '|')+1, strpos($line, '$')-strpos($line, '|')-1);
+
+        $chars = str_split($chars);
+
+        $nochar = true;
+        $justify = false;
+        foreach ($chars as $char) {
+            if ($char == ':') {
+                $justify = true;
+                if ($nochar) {
+                    $classes = '';
+                }
+                continue;
+            }
+            $nochar = false;
+
+            if (ctype_upper($char) || is_numeric($char)) {
+                if ($char == 'N') {
+                    $classes = '';
+                } else {
                     if ($justify) {
                         $classes .= 'J';
                     }
                     $classes .= $char.' ';
                 }
             }
-
-            $out .= '<div class="line '.$classes.'">'.$content.'<br></div>';
         }
+
+        $out .= '<div class="line '.$classes.'">'.$content.'<br></div>';
     }
 
     return $out;

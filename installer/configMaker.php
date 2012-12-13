@@ -5,6 +5,7 @@ $dbhost = optional_param('dbhost', 'localhost');
 $dbname = optional_param('dbname');
 $dbuser = optional_param('dbuser', 'root');
 $dbpass = optional_param('dbpass');
+$printkey = optional_param('printkey');
 $prefix = optional_param('prefix', 'scl_');
 $dir = optional_param('dir', dirname(dirname(__file__)));
 
@@ -12,21 +13,6 @@ $submit = optional_param('submit');
 $download = optional_param('download');
 
 $configfile = $dir.'/config.php';
-
-/*if (file_exists($configfile)) {
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><title>Super Craigslist Installer</title></head>
-<body>
-Your config.php file exists! Click to continue to the next installer phase:
-<form method="post" action="sqlInstaller.php">
-<input type="submit" name="cont" value="Continue...">
-</form>
-</body>
-<?php
-exit;
-}*/
 
 
 if ($submit || $download) {
@@ -46,9 +32,10 @@ if ($submit || $download) {
     $cfgstr .= '$CONFIG->dbpersist =  false;'."\r\n";
     $cfgstr .= '$CONFIG->prefix    = \''.$prefix."';\r\n";
     $cfgstr .= "\r\n";
-	
+	$cfgstr .= '$CONFIG->printerkey    = \''.addsingleslashes($printkey)."';\r\n";
+    $cfgstr .= "\r\n";	
 	$cfgstr .= '$CONFIG->installpath    = \''.$dir."';\r\n";
-	$cfgstr .= '$CONFIG->limitMI =  true;'."\r\n";
+    $cfgstr .= '$CONFIG->debug     =  false;'."\r\n";
 	$cfgstr .= "\r\n";
     $cfgstr .= "include('lib/setup.php');\r\n";
     $cfgstr .= '// MAKE SURE WHEN YOU EDIT THIS FILE THAT THERE ARE NO SPACES, BLANK LINES,'."\r\n";
@@ -137,6 +124,7 @@ if (file_exists($configfile)) {
 	DB Name: <input type="text" name="dbname" value="<?php echo $dbname; ?>"><br>
 	DB Username: <input type="text" name="dbuser" value="<?php echo $dbuser; ?>"><br>
 	DB Password: <input type="password" name="dbpass" value="<?php echo $dbpass; ?>"><br>
+    Printer auth key: <input type="password" name="printkey" value="<?php echo $printkey; ?>"><br>
 	Table Prefix: <input type="text" name="prefix" value="<?php echo $prefix; ?>"><br>
 	<br>
 	Install Directory: <input type="text" name="dir" value="<?php echo $dir; ?>"><br>
