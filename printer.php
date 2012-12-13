@@ -5,7 +5,7 @@ require('config.php');
 
 $key = optional_param('key', '');
 
-if ($key !== 'akey') {
+if ($key !== $CONFIG->printerkey) {
     exit();
 }
 
