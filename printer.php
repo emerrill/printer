@@ -9,8 +9,9 @@ if ($key !== $CONFIG->printerkey) {
     exit();
 }
 
-$paper = optional_param('paper', 1);
+$paper = optional_param('paper', null);
 $last = optional_param('last', 0);
+
 
 if ($paper !== null) {
     if ($paper == 1) {
@@ -44,6 +45,13 @@ if ($paper !== null) {
     }
     exit();
 }
+
+$status = new stdClass();
+$status->time = time();
+$status->paper = 1;
+insert_record('status', $status);
+
+
 
 if (!$blocks = get_records('printblocks', 'printed', 0, 'id ASC')) {
     exit();
