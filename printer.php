@@ -29,6 +29,7 @@ if ($paper !== null) {
 
             if ($record = get_record_sql('SELECT * FROM '.$CONFIG->prefix.'printblocks WHERE printed = 1 ORDER BY id DESC')) {
                 $newblock = new stdClass();
+                $newblock->printed = 0;
 
                 if ($blocks = get_records_sql('printblocks', 'messageid', $record->messageid)) {
                     foreach ($blocks as $block) {
