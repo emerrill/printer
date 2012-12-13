@@ -31,8 +31,10 @@ if ($paper !== null) {
                 $newblock = new stdClass();
 
                 if ($blocks = get_records_sql('printblocks', 'messageid', $record->messageid)) {
-                    $newblock->id = $record->id;
-                    update_record('printblocks', $newblock);
+                    foreach ($blocks as $block) {
+                        $newblock->id = $block->id;
+                        update_record('printblocks', $newblock);
+                    }
                 }
 
                 if ($record = get_record_sql('SELECT * FROM '.$CONFIG->prefix.'messages WHERE id = '.$record->messageid)) {
