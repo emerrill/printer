@@ -73,7 +73,7 @@ function get_header($message) {
 
     $name = str_pad($name, 32-strlen($date));
 
-    $head .= "|NL:L$".$name.$date."\n";
+    $head .= "|NI:L$".$name.$date."\n";
     $head .= "|N:$\n";
 
     return $head;
