@@ -42,6 +42,7 @@ if ($paper !== null) {
         }
         exit();
     }
+    exit();
 }
 
 if (!$blocks = get_records('printblocks', 'printed', 0, 'id ASC')) {
