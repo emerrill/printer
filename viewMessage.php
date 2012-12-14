@@ -2,6 +2,8 @@
 
 require('config.php');
 
+require_login();
+
 $mid = optional_param('messageid', 0);
 
 if (!$mid || !($message = get_record('messages', 'id', $mid))) {

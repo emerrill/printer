@@ -12,6 +12,9 @@ $sent = optional_param('sent', 0);
 
 print_header();
 
+if (!isset($USER) || !$USER->id) {
+	exit();
+}
 if ($sent) {
     print "<br><br>";
     print "<font color=green>Message queued for printing.</font>";
