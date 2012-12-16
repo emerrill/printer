@@ -12,7 +12,7 @@ function create_message($message, $source = SOURCE_DIRECT) {
 
     $mesg = new stdClass();
     $mesg->userid = $USER->id;
-    $mesg->content = addslashes($message);
+    $mesg->content = $message;
     $mesg->time = time();
     $mesg->source = $source;
     $mesg->id = insert_record('messages', $mesg);
