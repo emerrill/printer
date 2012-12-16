@@ -20,7 +20,7 @@ print_header();
 if ($preview) {
     $mesg = new stdClass();
     $mesg->userid = $USER->id;
-    $mesg->content = stripslashes($message);
+    $mesg->content = $message;
     $mesg->time = time();
     $mesg->source = SOURCE_DIRECT;
 
@@ -36,7 +36,7 @@ if ($preview) {
 
 print '<FORM METHOD=POST>';
 
-print '<textarea cols=32 rows=25 name="message">'.stripslashes($message).'</textarea>';
+print '<textarea cols=32 rows=25 name="message">'.$message.'</textarea>';
 
 print '<br><br>';
 print '<INPUT TYPE=SUBMIT NAME=Submit VALUE=Submit> ';
