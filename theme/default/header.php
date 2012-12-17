@@ -1,9 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Home Page</title>
-<link rel="stylesheet" href="theme/default/style.css" />
+<link href="theme/default/style.css" rel="stylesheet" media="Screen and (min-device-width:768px) and (min-width:768px), print, projection">
+<link media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" rel="stylesheet" href="theme/default/mobile.css" type="text/css" />
 </head>
  
 <body>
