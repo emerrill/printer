@@ -43,7 +43,24 @@ $CONFIG->prefix."users" =>
   `email` varchar(100) NOT NULL,
   `isAdmin` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;"
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;",
+
+$CONFIG->prefix."tweets" =>
+"CREATE TABLE IF NOT EXISTS `".$CONFIG->prefix."tweets` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tweetid` varchar(100) COLLATE utf8_bin NOT NULL,
+  `date` int(11) NOT NULL,
+  `body` varchar(255) COLLATE utf8_bin NOT NULL,
+  `twittername` int(11) NOT NULL,
+  `messageid` int(11) DEFAULT NULL,
+  `userid` int(11) DEFAULT NULL,
+  `raw` text COLLATE utf8_bin NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;",
+
+$CONFIG->prefix."users.twittername,twitterpref" =>
+"ALTER TABLE  `".$CONFIG->prefix."users` ADD  `twittername` VARCHAR( 30 ) NULL AFTER  `email` ,
+ADD  `twitterpref` INT NULL AFTER  `twittername`;"
 );
 
 

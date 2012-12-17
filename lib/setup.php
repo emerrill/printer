@@ -5,6 +5,7 @@ include($CONFIG->installpath.'/lib/db.php');
 include($CONFIG->installpath.'/lib/theme.php');
 include($CONFIG->installpath.'/lib/user.php');
 include($CONFIG->installpath.'/lib/printer.php');
+include($CONFIG->installpath.'/lib/twitter.php');
 
 date_default_timezone_set('America/New_York');
 
