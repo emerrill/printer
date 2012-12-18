@@ -1,4 +1,8 @@
 <?php
+
+define('TWITTER_SELECT_ALL', 1);
+define('TWITTER_SELECT_HASH', 2);
+
 include($CONFIG->installpath.'/lib/twitter/twitter.class.php');
 
 function get_twitter() {
@@ -28,7 +32,7 @@ function load_tweets($fromid = '', $what = Twitter::ME_AND_FRIENDS, $limit = 100
         foreach ($statuses as $status) {
             if ($status->id_str === $fromid) {
                 $found = true;
-print "BREAK!";
+
                 break;
             }
             $out[] = $status;

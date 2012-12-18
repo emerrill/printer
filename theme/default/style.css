@@ -67,6 +67,9 @@ border: 1px solid #acacac;
     font-size: x-large;
 }
 
+.messageinput {
+    font-family: monospace;
+}
 
 
 a{

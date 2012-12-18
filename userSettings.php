@@ -13,6 +13,8 @@ $fname = optional_param('fname', $user->firstname);
 $email = optional_param('email', $user->email);
 $location = optional_param('location', $user->location);
 $userid = optional_param('userid');
+$twitter = optional_param('twitter', $USER->twittername);
+$twittersel = optional_param('twittersel', $USER->twitterpref);
 $defaultRegion = optional_param('defaultRegion', $user->defaultRegion);
 
 
@@ -59,8 +61,10 @@ if ($submit) {
         $upuser->firstname = $fname;
         $upuser->email = $email;
 
-        
-        update_record('users', $upuser);
+        $upuser->twittername = $twitter;
+        $upuser->twitterpref = $twittersel;
+
+        update_record('users', addslashes_object($upuser));
 		
 		if ($USER->id == $upuser->id) {
 			$USER = get_record('users', 'id', $upuser->id);
@@ -106,6 +110,21 @@ print "</select></form>";*/
 	if ($emailinvalid) {
 		print '<font color=red>Invalid Email</font>';
 	}
+	print '<br>';
+	print 'Twitter: @<INPUT TYPE=TEXT NAME=twitter value="'.$twitter.'">';
+    print '<br>';
+    print 'Which tweets: <select name=twittersel>';
+    $sel = '';
+    if ($twittersel == TWITTER_SELECT_ALL) {
+        $sel = 'selected';
+    }
+    print '<option value='.TWITTER_SELECT_ALL.' '.$sel.'>All Tweets</option>';
+    $sel = '';
+    if ($twittersel == TWITTER_SELECT_HASH) {
+        $sel = 'selected';
+    }
+    print '<option value='.TWITTER_SELECT_HASH.' '.$sel.'>Tweets with #p</option>';
+    print '</select>';
 	print '<br>';
 	print '<br>';
 	print '<INPUT TYPE=SUBMIT NAME=Submit VALUE=Submit><br>';

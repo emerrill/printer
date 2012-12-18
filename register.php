@@ -8,6 +8,8 @@ $passwd2 = optional_param('passwd2');
 $fname = optional_param('fname');
 $lname = optional_param('lname');
 $email = optional_param('email');
+$twitter = optional_param('twitter');
+$twittersel = optional_param('twittersel');
 
 
 $status = false;
@@ -52,7 +54,10 @@ if ($submit) {
         $newuser->firstname = $fname;
         $newuser->email = $email;
         
-        $newuser->id = insert_record('users', $newuser);
+        $newuser->twittername = $twitter;
+        $newuser->twitterpref = $twittersel;
+
+        $newuser->id = insert_record('users', addslashes_object($newuser));
         
         $USER = $newuser;
     }
@@ -98,6 +103,21 @@ if (!$status) {
 	if ($emailinvalid) {
 		print '<font color=red>Invalid Email</font>';
 	}
+	print '<br>';
+	print 'Twitter: @<INPUT TYPE=TEXT NAME=twitter value="'.$twitter.'">';
+    print '<br>';
+    print 'Which tweets: <select name=twittersel>';
+    $sel = '';
+    if ($twittersel == TWITTER_SELECT_ALL) {
+        $sel = 'selected';
+    }
+    print '<option value='.TWITTER_SELECT_ALL.' '.$sel.'>All Tweets</option>';
+    $sel = '';
+    if ($twittersel == TWITTER_SELECT_HASH) {
+        $sel = 'selected';
+    }
+    print '<option value='.TWITTER_SELECT_HASH.' '.$sel.'>Tweets with #p</option>';
+    print '</select>';
 	print '<br>';
 	print '<br>';
 	print '<INPUT TYPE=SUBMIT NAME=Submit VALUE=Submit><br>';

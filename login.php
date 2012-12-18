@@ -2,7 +2,7 @@
 include('config.php');
 
 if (optional_param('Login') && ($username = optional_param('username')) && ($passwd = optional_param('passwd'))) {
-    if ($user = check_login($username, $passwd)) {
+    if ($user = check_login(addslashes($username), $passwd)) {
         $USER = $user;
         redirect('index.php');
         //print 'logged in';
