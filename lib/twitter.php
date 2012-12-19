@@ -48,6 +48,16 @@ function load_tweets($fromid = '', $what = Twitter::ME_AND_FRIENDS, $limit = 100
     return $out;
 }
 
+function process_tweets(array $tweets) {
+    while ($tweet = array_pop($tweets)) {
+        process_tweet($tweet);
+    }
+}
+
+function process_tweet($tweet) {
+    
+}
+
 
 function get_most_recent_tweet() {
     global $CONFIG;
