@@ -60,7 +60,13 @@ $CONFIG->prefix."tweets" =>
 
 $CONFIG->prefix."users.twittername,twitterpref" =>
 "ALTER TABLE  `".$CONFIG->prefix."users` ADD  `twittername` VARCHAR( 30 ) NULL AFTER  `email` ,
-ADD  `twitterpref` INT NULL AFTER  `twittername`;"
+ADD  `twitterpref` INT NULL AFTER  `twittername`;",
+
+$CONFIG->prefix."tweets.type" =>
+"ALTER TABLE  `".$CONFIG->prefix."tweets` ADD  `type` tinyint(4) NULL AFTER  `tweetid`;",
+
+$CONFIG->prefix."messages.source" =>
+"ALTER TABLE  `".$CONFIG->prefix."messages` ADD  `source` tinyint(4) NULL AFTER  `userid`;"
 );
 
 

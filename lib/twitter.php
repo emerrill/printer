@@ -3,6 +3,11 @@
 define('TWITTER_SELECT_ALL', 1);
 define('TWITTER_SELECT_HASH', 2);
 define('TWITTER_SELECT_MENTION', 3);
+define('TWITTER_SELECT_DM', 4);
+
+define('TWITTER_TYPE_NORMAL', 1);
+define('TWITTER_TYPE_DM', 2);
+
 
 include($CONFIG->installpath.'/lib/twitter/twitter.class.php');
 
@@ -14,39 +19,47 @@ function get_twitter() {
     return $twitter;
 }
 
-function load_tweets($fromid = '', $what = Twitter::ME_AND_FRIENDS, $limit = 100) {
+function update_twitter() {
+    update_tweets(false);
+    update_tweets(true);
+}
+
+function update_tweets($DMs = false) {
+    if ($tweet = get_most_recent_tweet($DMs)) {
+        $lastid = $tweet->tweetid;
+        $limit = 100;
+    } else {
+        $lastid = '';
+        $limit = 1;
+    }
+
+    $tweets = load_tweets($lastid, $DMs, $limit);
+
+    process_tweets($tweets);
+}
+
+function load_tweets($fromid = '', $DMs = false, $limit = 100) {
     $twitter = get_twitter();
 
     $out = array();
 
-    $fetch = 20;
-    $found = false;
-    $page = 1;
-
-    for ($i = 0; $i < ceil($limit/$fetch); $i++) {
-        //$get = $limit - $i;
-        //if ($get > $fetch) {
-        //    $get = $fetch;
-        //}
-        $statuses = $twitter->load($what, $fetch, $i);
-
-        foreach ($statuses as $status) {
-            if ($status->id_str === $fromid) {
-                $found = true;
-
-                break;
-            }
-            $out[] = $status;
-        }
-
-        if ($found) {
-            break;
-        }
+    if (!empty($fromid)) {
+        $from = '&since_id='.$fromid;
+    } else {
+        $from = '';
     }
-    
 
 
-    return $out;
+    $fetch = 100;
+
+    if ($DMs) {
+        $statuses = $twitter->request('direct_messages.json?count='.$limit.$from, 'GET');
+    } else {
+        $statuses = $twitter->request('statuses/home_timeline.json?count='.$limit.$from, 'GET');
+        //$statuses = $twitter->load($what, $fetch, $i);
+    }
+
+    return $statuses;
 }
 
 function process_tweets(array $tweets) {
@@ -62,8 +75,14 @@ function process_tweet($tweet) {
     $tweetobj->tweetid = $tweet->id_str;
     $tweetobj->date = strtotime($tweet->created_at);
     $tweetobj->body = $tweet->text;
-    $tweetobj->twittername = $tweet->user->screen_name;
     $tweetobj->raw = serialize($tweet);
+    if (isset($tweet->recipient)) {
+        $tweetobj->twittername = $tweet->sender->screen_name;
+        $tweetobj->type = TWITTER_TYPE_DM;
+    } else {
+        $tweetobj->twittername = $tweet->user->screen_name;
+        $tweetobj->type = TWITTER_TYPE_NORMAL;
+    }
 
     if (!$tweetobj->id = insert_record('tweets', addslashes_object($tweetobj))) {
         print "Error inserting tweet ".$tweet->id_str;
@@ -79,37 +98,52 @@ function process_tweet($tweet) {
 
     switch ($user->twitterpref) {
         case TWITTER_SELECT_ALL:
-            $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user);
-            break;
         case TWITTER_SELECT_HASH:
-            if (stripos($tweetobj->body, '#p') !== false) {
-                $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user);
+            if (($tweetobj->type == TWITTER_TYPE_NORMAL) && (stripos($tweetobj->body, '#p') !== false)) {
+                $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user, $tweetobj->date);
+                break;
             }
-            break;
         case TWITTER_SELECT_MENTION:
-            if (stripos($tweetobj->body, '@'.$CONFIG->twitter_name) !== false) {
-                $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user);
+            if (($tweetobj->type == TWITTER_TYPE_NORMAL) && (stripos($tweetobj->body, '@'.$CONFIG->twitter_name) !== false)) {
+                $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER_MENTION, $user, $tweetobj->date);
+                break;
             }
-            break;
+        case TWITTER_SELECT_DM:
+            if ($tweetobj->type == TWITTER_TYPE_DM) {
+                $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER_DIRECT, $user, $tweetobj->date);
+                break;
+            }
+
+            if ($user->twitterpref == TWITTER_SELECT_ALL) {
+                $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user, $tweetobj->date);
+                break;
+            }
 
     }
 
-
-    //$tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user);
-
     update_record('tweets', $tweetobj);
 
-    //$tweetobj->messageid;
-    //$tweetobj->userid;
 }
 
 
-function get_most_recent_tweet() {
+function get_most_recent_tweet($DMs = false) {
     global $CONFIG;
-    if ($record = get_record_sql('SELECT * FROM '.$CONFIG->prefix.'tweets ORDER BY id DESC')) {
+
+    if ($DMs) {
+        $type = TWITTER_TYPE_DM;
+    } else {
+        $type = TWITTER_TYPE_NORMAL;
+    }
+
+    if ($record = get_record_sql('SELECT * FROM '.$CONFIG->prefix.'tweets WHERE type = '.$type.' ORDER BY id DESC')) {
         return $record;
     }
 
     return false;
 }
 
+
+function follow_user($username) {
+    $twitter = get_twitter();
+    $twitter->request('friendships/create', 'POST', array('screen_name' => $username));
+}

@@ -24,12 +24,33 @@ if ($sent) {
 $recents = get_records('messages', '', '', 'id DESC', '*', '', 20);
 
 print "<table>";
-print "<tr><td width=75px>From</td><td width=180px>Time</td><td width=75px>Status</td><td></td></tr>";
+print "<tr><td width=75px>From</td><td width=115px>Source</td><td width=180px>Time</td><td width=75px>Status</td><td></td></tr>";
 foreach ($recents as $message) {
     print "<tr>";
     $user = get_record('users', 'id', $message->userid);
     print "<td>";
     print $user->firstname;
+    print "</td>";
+    print "<td>";
+    switch ($message->source) {
+        case SOURCE_SOCIAL:
+            print "Social";
+            break;
+        case SOURCE_TWITTER:
+            print "Twitter";
+            break;
+        case SOURCE_TWITTER_DIRECT:
+            print "Twitter DM";
+            break;
+        case SOURCE_TWITTER_MENTION:
+            print "Twitter Mention";
+            break;
+        case SOURCE_DIRECT:
+        default:
+            print "Direct";
+            break;
+        
+    }
     print "</td>";
     print "<td>";
     print date('m/d/Y H:i:s', $message->time);

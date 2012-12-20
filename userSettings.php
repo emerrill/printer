@@ -18,6 +18,7 @@ $twittersel = optional_param('twittersel', $USER->twitterpref);
 $defaultRegion = optional_param('defaultRegion', $user->defaultRegion);
 
 
+
 if ($submit) {
     $status = true;
     
@@ -63,6 +64,10 @@ if ($submit) {
 
         $upuser->twittername = $twitter;
         $upuser->twitterpref = $twittersel;
+
+        if ($USER->twittername !== $twitter) {
+            follow_user($twitter);
+        }
 
         update_record('users', addslashes_object($upuser));
 		
@@ -123,13 +128,21 @@ print "</select></form>";*/
     if ($twittersel == TWITTER_SELECT_HASH) {
         $sel = 'selected';
     }
-    print '<option value='.TWITTER_SELECT_HASH.' '.$sel.'>Tweets with #p</option>';
+    print '<option value='.TWITTER_SELECT_HASH.' '.$sel.'>#p + @'.$CONFIG->twitter_name.' + DMs</option>';
     $sel = '';
     if ($twittersel == TWITTER_SELECT_MENTION) {
         $sel = 'selected';
     }
-    print '<option value='.TWITTER_SELECT_MENTION.' '.$sel.'>Tweets with @'.$CONFIG->twitter_name.'</option>';
+    print '<option value='.TWITTER_SELECT_MENTION.' '.$sel.'>@'.$CONFIG->twitter_name.' + DMs</option>';
+    $sel = '';
+    if ($twittersel == TWITTER_SELECT_DM) {
+        $sel = 'selected';
+    }
+    print '<option value='.TWITTER_SELECT_DM.' '.$sel.'>DMs only</option>';
     print '</select>';
+    print '<br><br>When you enter a twitter name, the you will get a follow notification or request.<br>';
+    print 'You can select what tweets to send:<br>All tweets<br>Tweets with #p + mention tweets + Direct messages<br>Mention tweets + Direct messages<br>Just Direct messages<br>';
+    print '<br>Direct messages will appear on the printer the same as if they were sent from the web interface.';
 	print '<br>';
 	print '<br>';
 	print '<INPUT TYPE=SUBMIT NAME=Submit VALUE=Submit><br>';

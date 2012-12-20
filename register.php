@@ -57,6 +57,8 @@ if ($submit) {
         $newuser->twittername = $twitter;
         $newuser->twitterpref = $twittersel;
 
+        follow_user($twitter);
+
         $newuser->id = insert_record('users', addslashes_object($newuser));
         
         $USER = $newuser;
@@ -116,15 +118,23 @@ if (!$status) {
     if ($twittersel == TWITTER_SELECT_HASH) {
         $sel = 'selected';
     }
-    print '<option value='.TWITTER_SELECT_HASH.' '.$sel.'>Tweets with #p</option>';
+    print '<option value='.TWITTER_SELECT_HASH.' '.$sel.'>#p + @'.$CONFIG->twitter_name.' + DMs</option>';
     $sel = '';
     if ($twittersel == TWITTER_SELECT_MENTION) {
         $sel = 'selected';
     }
-    print '<option value='.TWITTER_SELECT_MENTION.' '.$sel.'>Tweets with @'.$CONFIG->twitter_name.'</option>';
+    print '<option value='.TWITTER_SELECT_MENTION.' '.$sel.'>@'.$CONFIG->twitter_name.' + DMs</option>';
+    $sel = '';
+    if ($twittersel == TWITTER_SELECT_DM) {
+        $sel = 'selected';
+    }
+    print '<option value='.TWITTER_SELECT_DM.' '.$sel.'>DMs only</option>';
     print '</select>';
+    print '<br><br>When you enter a twitter name, the you will get a follow notification or request.<br>';
+    print 'You can select what tweets to send:<br>All tweets<br>Tweets with #p + mention tweets + Direct messages<br>Mention tweets + Direct messages<br>Just Direct messages<br>';
+    print '<br>Direct messages will appear on the printer the same as if they were sent from the web interface.';	print '<br>';
 	print '<br>';
-	print '<br>';
+    print '<br>';
 	print '<INPUT TYPE=SUBMIT NAME=Submit VALUE=Submit><br>';
 	print '</FORM>';
 }

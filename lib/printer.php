@@ -9,18 +9,21 @@ define('SOURCE_TWITTER_MENTION', 4);
 define('BLOCK_LIMIT', 256);
 
 
-function create_message($message, $source = SOURCE_DIRECT, $user = false) {
+function create_message($message, $source = SOURCE_DIRECT, $user = false, $time = false) {
     global $USER;
 
     if ($user === false) {
         $user = $USER;
     }
 
+    if (!$time) {
+        $time = time();
+    }
 
     $mesg = new stdClass();
     $mesg->userid = $user->id;
     $mesg->content = addslashes($message);
-    $mesg->time = time();
+    $mesg->time = $time;
     $mesg->source = $source;
     $mesg->id = insert_record('messages', $mesg);
 

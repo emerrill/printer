@@ -29,7 +29,13 @@ $USER = &$_SESSION['USER'];
 //Connect the db
 $DB = ADONewConnection('mysql');
     
-//$DB->debug = $CONFIG->debug;
+$DB->debug = $CONFIG->debug;
+
+if ($CONFIG->debug) {
+    ini_set('display_errors', '1');
+} else {
+    ini_set('display_errors', '0');
+}
 
 if (!isset($CONFIG->dbpersist) or !empty($CONFIG->dbpersist)) {    // Use persistent connection (default)
     $dbconnected = $DB->PConnect($CONFIG->dbhost,$CONFIG->dbuser,$CONFIG->dbpass,$CONFIG->dbname);
