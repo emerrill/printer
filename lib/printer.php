@@ -2,22 +2,31 @@
 
 define('SOURCE_DIRECT', 0);
 define('SOURCE_SOCIAL', 1);
+define('SOURCE_TWITTER', 2);
+define('SOURCE_TWITTER_DIRECT', 3);
+define('SOURCE_TWITTER_MENTION', 4);
 
 define('BLOCK_LIMIT', 256);
 
 
-function create_message($message, $source = SOURCE_DIRECT) {
+function create_message($message, $source = SOURCE_DIRECT, $user = false) {
     global $USER;
+
+    if ($user === false) {
+        $user = $USER;
+    }
 
 
     $mesg = new stdClass();
-    $mesg->userid = $USER->id;
+    $mesg->userid = $user->id;
     $mesg->content = addslashes($message);
     $mesg->time = time();
     $mesg->source = $source;
     $mesg->id = insert_record('messages', $mesg);
 
     make_blocks($mesg);
+
+    return $mesg->id;
 }
 
 function make_blocks($message, $return = false) {
@@ -70,9 +79,15 @@ function save_block($content, $messageid) {
 function get_header($message) {
     $head = '';
 
-    if ($message->source == SOURCE_DIRECT) {
+    if (($message->source == SOURCE_DIRECT) || ($message->source == SOURCE_TWITTER_DIRECT)) {
         $head .= '|WH:C$DIRECT'."\n";
     }
+
+    if (($message->source == SOURCE_TWITTER) || ($message->source == SOURCE_TWITTER_MENTION)) {
+        $head .= '|N:C$Tweet'."\n";
+    }
+
+    
 
     $user = get_record('users', 'id', $message->userid);
     $name = $user->firstname;

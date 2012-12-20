@@ -124,6 +124,11 @@ print "</select></form>";*/
         $sel = 'selected';
     }
     print '<option value='.TWITTER_SELECT_HASH.' '.$sel.'>Tweets with #p</option>';
+    $sel = '';
+    if ($twittersel == TWITTER_SELECT_MENTION) {
+        $sel = 'selected';
+    }
+    print '<option value='.TWITTER_SELECT_MENTION.' '.$sel.'>Tweets with @'.$CONFIG->twitter_name.'</option>';
     print '</select>';
 	print '<br>';
 	print '<br>';

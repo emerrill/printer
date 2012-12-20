@@ -2,6 +2,7 @@
 
 define('TWITTER_SELECT_ALL', 1);
 define('TWITTER_SELECT_HASH', 2);
+define('TWITTER_SELECT_MENTION', 3);
 
 include($CONFIG->installpath.'/lib/twitter/twitter.class.php');
 
@@ -55,7 +56,51 @@ function process_tweets(array $tweets) {
 }
 
 function process_tweet($tweet) {
-    
+    global $CONFIG;
+
+    $tweetobj = new stdClass();
+    $tweetobj->tweetid = $tweet->id_str;
+    $tweetobj->date = strtotime($tweet->created_at);
+    $tweetobj->body = $tweet->text;
+    $tweetobj->twittername = $tweet->user->screen_name;
+    $tweetobj->raw = serialize($tweet);
+
+    if (!$tweetobj->id = insert_record('tweets', addslashes_object($tweetobj))) {
+        print "Error inserting tweet ".$tweet->id_str;
+        return false;
+    }
+
+    if (!$user = get_record('users', 'twittername', addslashes($tweetobj->twittername))) {
+        print $tweetobj->twittername." not found.";
+        return false;
+    }
+
+    $tweetobj->userid = $user->id;
+
+    switch ($user->twitterpref) {
+        case TWITTER_SELECT_ALL:
+            $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user);
+            break;
+        case TWITTER_SELECT_HASH:
+            if (stripos($tweetobj->body, '#p') !== false) {
+                $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user);
+            }
+            break;
+        case TWITTER_SELECT_MENTION:
+            if (stripos($tweetobj->body, '@'.$CONFIG->twitter_name) !== false) {
+                $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user);
+            }
+            break;
+
+    }
+
+
+    //$tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user);
+
+    update_record('tweets', $tweetobj);
+
+    //$tweetobj->messageid;
+    //$tweetobj->userid;
 }
 
 
