@@ -1,6 +1,6 @@
 <?php
 
-require("../config.php");
+require(dirname(__FILE__)."/config.php");
 
 Twitter::$cacheDir = '/usr/local/apache2/moodledata/twitter';
 
