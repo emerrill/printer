@@ -74,7 +74,7 @@ function process_tweet($tweet) {
     $tweetobj = new stdClass();
     $tweetobj->tweetid = $tweet->id_str;
     $tweetobj->date = strtotime($tweet->created_at);
-    $tweetobj->body = $tweet->text;
+    $tweetobj->body = html_entity_decode($tweet->text);
     $tweetobj->raw = serialize($tweet);
     if (isset($tweet->recipient)) {
         $tweetobj->twittername = $tweet->sender->screen_name;
