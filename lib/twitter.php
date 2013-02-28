@@ -95,32 +95,31 @@ function process_tweet($tweet) {
     }
 
     $tweetobj->userid = $user->id;
-
-    switch ($user->twitterpref) {
-        case TWITTER_SELECT_ALL:
-        case TWITTER_SELECT_HASH:
-            if (($tweetobj->type == TWITTER_TYPE_NORMAL) && (stripos($tweetobj->body, '#p') !== false)) {
-                $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user, $tweetobj->date);
-                break;
-            }
-        case TWITTER_SELECT_MENTION:
-            if (($tweetobj->type == TWITTER_TYPE_NORMAL) && (stripos($tweetobj->body, '@'.$CONFIG->twitter_name) !== false)) {
-                $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER_MENTION, $user, $tweetobj->date);
-                break;
-            }
-        case TWITTER_SELECT_DM:
-            if ($tweetobj->type == TWITTER_TYPE_DM) {
-                $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER_DIRECT, $user, $tweetobj->date);
-                break;
-            }
-
-            if ($user->twitterpref == TWITTER_SELECT_ALL) {
-                $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user, $tweetobj->date);
-                break;
-            }
-
+    if (stripos($tweetobj->body, '#np') === false) {
+        switch ($user->twitterpref) {
+            case TWITTER_SELECT_ALL:
+            case TWITTER_SELECT_HASH:
+                if (($tweetobj->type == TWITTER_TYPE_NORMAL) && (stripos($tweetobj->body, '#p') !== false)) {
+                    $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user, $tweetobj->date);
+                    break;
+                }
+            case TWITTER_SELECT_MENTION:
+                if (($tweetobj->type == TWITTER_TYPE_NORMAL) && (stripos($tweetobj->body, '@'.$CONFIG->twitter_name) !== false)) {
+                    $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER_MENTION, $user, $tweetobj->date);
+                    break;
+                }
+            case TWITTER_SELECT_DM:
+                if ($tweetobj->type == TWITTER_TYPE_DM) {
+                    $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER_DIRECT, $user, $tweetobj->date);
+                    break;
+                }
+    
+                if ($user->twitterpref == TWITTER_SELECT_ALL) {
+                    $tweetobj->messageid = create_message($tweetobj->body, SOURCE_TWITTER, $user, $tweetobj->date);
+                    break;
+                }
+        }
     }
-
     update_record('tweets', $tweetobj);
 
 }
